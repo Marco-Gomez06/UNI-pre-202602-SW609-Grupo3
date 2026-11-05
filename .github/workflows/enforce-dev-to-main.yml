@@ -1,0 +1,40 @@
+name: Enforce dev → main PR rule
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+jobs:
+  check-source-branch:
+    name: Verificar rama origen del PR
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - name: Bloquear PR si no viene de dev
+        if: github.head_ref != 'dev'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## ❌ PR bloqueado — flujo de trabajo incorrecto\n\nEste PR intenta mergear la rama \`${{ github.head_ref }}\` directamente a \`main\`, lo cual **no está permitido**.\n\n### Flujo de trabajo del equipo:\n\n\`\`\`\ntu-rama  →  PR  →  dev  →  PR  →  main\n\`\`\`\n\n### Qué debes hacer:\n1. **Cierra este PR**\n2. Ve a tu rama (\`${{ github.head_ref }}\`) y abre un **nuevo PR apuntando a \`dev\`**\n3. Una vez aprobado y mergeado en \`dev\`, el admin abrirá el PR de \`dev\` → \`main\`\n\n> Solo los PRs desde la rama \`dev\` pueden mergearse a \`main\`.`
+            });
+
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              state: 'closed'
+            });
+
+            core.setFailed('Los PRs a main solo se permiten desde la rama dev. Este PR ha sido cerrado automáticamente.');
