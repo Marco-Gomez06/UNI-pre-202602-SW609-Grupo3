@@ -19,3 +19,8 @@
 		- [2.1.2. Registro de entrevistas](./2/2.1/2.1.2/2.1.2.md)
 		- [2.1.3. Análisis de entrevistas](./2/2.1/2.1.3/2.1.3.md)
 	- [2.2. Requisitos](./2/2.2/2.2.md)
+- [3. Diseño de base de datos](./3/3.md)
+	- [3.1. Entidades](./3/3.1/3.1.md)
+	- [3.2. Atributos](./3/3.2/3.2.md)
+	- [3.3. Enfoque relacional](./3/3.3/3.3.md)
+		- [3.3.1. Diagrama entidad-relación lógico](./3/3.3/3.3.1/3.3.1.md)
